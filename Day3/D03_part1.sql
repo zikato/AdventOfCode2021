@@ -51,30 +51,25 @@ WITH
 	TABLOCK
 )
 
-INSERT INTO #Inputs WITH (TABLOCKX)
-SELECT 
-	s.*
-FROM #Stage AS s
-
 DECLARE @gamma char(12)
 
 SELECT 
 	@gamma = CONCAT
 	(
-			IIF(SUM(i.Bit01) > 500, '1', '0')	
-		, IIF(SUM(i.Bit02) > 500, '1', '0')	
-		, IIF(SUM(i.Bit03) > 500, '1', '0')	
-		, IIF(SUM(i.Bit04) > 500, '1', '0')	
-		, IIF(SUM(i.Bit05) > 500, '1', '0')	
-		, IIF(SUM(i.Bit06) > 500, '1', '0')	
-		, IIF(SUM(i.Bit07) > 500, '1', '0')	
-		, IIF(SUM(i.Bit08) > 500, '1', '0')	
-		, IIF(SUM(i.Bit09) > 500, '1', '0')	
-		, IIF(SUM(i.Bit10) > 500, '1', '0')	
-		, IIF(SUM(i.Bit11) > 500, '1', '0')	
-		, IIF(SUM(i.Bit12) > 500, '1', '0')	
+		  IIF(SUM(s.Bit01) > 500, '1', '0')	
+		, IIF(SUM(s.Bit02) > 500, '1', '0')	
+		, IIF(SUM(s.Bit03) > 500, '1', '0')	
+		, IIF(SUM(s.Bit04) > 500, '1', '0')	
+		, IIF(SUM(s.Bit05) > 500, '1', '0')	
+		, IIF(SUM(s.Bit06) > 500, '1', '0')	
+		, IIF(SUM(s.Bit07) > 500, '1', '0')	
+		, IIF(SUM(s.Bit08) > 500, '1', '0')	
+		, IIF(SUM(s.Bit09) > 500, '1', '0')	
+		, IIF(SUM(s.Bit10) > 500, '1', '0')	
+		, IIF(SUM(s.Bit11) > 500, '1', '0')	
+		, IIF(SUM(s.Bit12) > 500, '1', '0')	
 	) 
-FROM #Inputs AS i 
+FROM #Stage AS s 
 
 
 ;WITH
@@ -92,11 +87,12 @@ AS
 	SELECT 
 		n
 		, POWER(2, n-1) AS powerOfTwo
-		, SUBSTRING(REVERSE('011100101100'),n,1) AS gamma
+		, SUBSTRING(REVERSE(@gamma),n,1) AS gamma
 	FROM tally 
 )
 SELECT 
-	SUM(cb.powerOfTwo * cb.gamma) AS gamma
-	, SUM(cb.powerOfTwo * ((cb.gamma + 1) % 2)) AS epsilon /* flip the bits */
+	@gamma AS gammaBinary
+	, SUM(cb.powerOfTwo * cb.gamma) AS gammaDecimal
+	, SUM(cb.powerOfTwo * ((cb.gamma + 1) % 2)) AS epsilonDecimal /* flip the bits */
 	, SUM(cb.powerOfTwo * cb.gamma) * SUM(cb.powerOfTwo * ((cb.gamma + 1) %2)) AS result
 FROM convertBinary AS cb
