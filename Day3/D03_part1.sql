@@ -40,6 +40,7 @@ CREATE TABLE #Inputs
 	, Bit12 tinyint NOT NULL
 )
 
+DECLARE @rowCount int
 
 BULK INSERT #Stage
 FROM 'D:\AdventOfCode2021\Day3\Input.csv'
@@ -51,23 +52,25 @@ WITH
 	TABLOCK
 )
 
+SET @rowCount = @@ROWCOUNT
+
 DECLARE @gamma char(12)
 
 SELECT 
 	@gamma = CONCAT
 	(
-		  IIF(SUM(s.Bit01) > 500, '1', '0')	
-		, IIF(SUM(s.Bit02) > 500, '1', '0')	
-		, IIF(SUM(s.Bit03) > 500, '1', '0')	
-		, IIF(SUM(s.Bit04) > 500, '1', '0')	
-		, IIF(SUM(s.Bit05) > 500, '1', '0')	
-		, IIF(SUM(s.Bit06) > 500, '1', '0')	
-		, IIF(SUM(s.Bit07) > 500, '1', '0')	
-		, IIF(SUM(s.Bit08) > 500, '1', '0')	
-		, IIF(SUM(s.Bit09) > 500, '1', '0')	
-		, IIF(SUM(s.Bit10) > 500, '1', '0')	
-		, IIF(SUM(s.Bit11) > 500, '1', '0')	
-		, IIF(SUM(s.Bit12) > 500, '1', '0')	
+		  IIF(SUM(s.Bit01) > @rowCount/2., '1', '0')	
+		, IIF(SUM(s.Bit02) > @rowCount/2., '1', '0')	
+		, IIF(SUM(s.Bit03) > @rowCount/2., '1', '0')	
+		, IIF(SUM(s.Bit04) > @rowCount/2., '1', '0')	
+		, IIF(SUM(s.Bit05) > @rowCount/2., '1', '0')	
+		, IIF(SUM(s.Bit06) > @rowCount/2., '1', '0')	
+		, IIF(SUM(s.Bit07) > @rowCount/2., '1', '0')	
+		, IIF(SUM(s.Bit08) > @rowCount/2., '1', '0')	
+		, IIF(SUM(s.Bit09) > @rowCount/2., '1', '0')	
+		, IIF(SUM(s.Bit10) > @rowCount/2., '1', '0')	
+		, IIF(SUM(s.Bit11) > @rowCount/2., '1', '0')	
+		, IIF(SUM(s.Bit12) > @rowCount/2., '1', '0')	
 	) 
 FROM #Stage AS s 
 
